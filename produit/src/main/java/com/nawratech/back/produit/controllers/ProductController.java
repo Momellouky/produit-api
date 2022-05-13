@@ -57,6 +57,15 @@ public class ProductController {
 
     }
 
+    @PostMapping
+    public EntityModel<Product> insertProduct(@RequestBody Product productToInsert){
+
+        Product insertedProduct =  productService.insertProduct(productToInsert);
+
+        return productAssembler.toModel(insertedProduct);
+
+    }
+
 
 
 }

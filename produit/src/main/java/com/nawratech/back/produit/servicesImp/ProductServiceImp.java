@@ -1,6 +1,7 @@
 package com.nawratech.back.produit.servicesImp;
 
 import com.nawratech.back.produit.exceptionHandlers.HttpBadRequestException;
+import com.nawratech.back.produit.exceptionHandlers.HttpUnprocessableEntityException;
 import com.nawratech.back.produit.exceptionHandlers.RessourceNotFoundException;
 import com.nawratech.back.produit.models.Product;
 import com.nawratech.back.produit.repositories.ProductRepo;
@@ -44,8 +45,43 @@ public class ProductServiceImp implements ProductService {
 
     }
 
+    /**
+     *
+     * @param : product
+     * @return : inserted product
+     * @throws HttpUnprocessableEntityException in case the product already exists in the database
+     *
+     * -----------------------------------------------------------------------------------------------
+     *
+     * isEmpty() method
+     *      @return  true  : if  the value is not present - the value isn't in the database
+     *      @return false : otherwise
+     *
+     *      using not ( ! ) to match the result of productRepo.findById(productId).isEmpty()
+     *      with the variable name isTheProductPresent
+     *
+     */
     @Override
-    public Product insertProduct(Product product) {
-        return productRepo.save(product);
+    public Product insertProduct(Product product) throws HttpUnprocessableEntityException{
+
+        Long productId = product.getId();
+
+       boolean isTheProductPresent =  ! productRepo.findById(productId).isEmpty();
+
+       if(isTheProductPresent == true){
+           //
+           // we don't need to insert the product, otherwise, we end up with duplicate products.
+           //
+
+           throw new HttpUnprocessableEntityException(productId);
+
+       }else {
+
+
+           return productRepo.save(product);
+
+       }
+
+
     }
 }
