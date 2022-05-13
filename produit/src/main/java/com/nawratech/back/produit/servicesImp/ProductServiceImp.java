@@ -1,5 +1,6 @@
 package com.nawratech.back.produit.servicesImp;
 
+import com.nawratech.back.produit.exceptionHandlers.HttpBadRequestException;
 import com.nawratech.back.produit.exceptionHandlers.RessourceNotFoundException;
 import com.nawratech.back.produit.models.Product;
 import com.nawratech.back.produit.repositories.ProductRepo;
@@ -33,8 +34,14 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
-    public Product findProductById(Long id) {
-        return productRepo.findById(id).get();
+    public Product findProductById(Long id) throws HttpBadRequestException {
+
+        if(id < 0) {
+            throw new HttpBadRequestException(id);
+        }
+
+        return  productRepo.findById(id).orElseThrow(() -> new RessourceNotFoundException());
+
     }
 
     @Override

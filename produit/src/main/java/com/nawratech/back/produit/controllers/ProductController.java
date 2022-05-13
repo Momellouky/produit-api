@@ -47,6 +47,16 @@ public class ProductController {
 
     }
 
+    @GetMapping("{id}")
+    public EntityModel<Product> findProductById(@PathVariable Long id){
+
+        Product product = productService.findProductById(id);
+
+
+        return productAssembler.toModel(product);
+
+    }
+
 
 
 }
