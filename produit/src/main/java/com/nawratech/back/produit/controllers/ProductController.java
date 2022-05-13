@@ -58,6 +58,7 @@ public class ProductController {
     }
 
     @PostMapping
+    @ResponseStatus(code = HttpStatus.CREATED)
     public EntityModel<Product> insertProduct(@RequestBody Product productToInsert){
 
         Product insertedProduct =  productService.insertProduct(productToInsert);

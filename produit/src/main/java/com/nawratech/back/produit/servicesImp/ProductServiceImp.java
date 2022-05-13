@@ -50,6 +50,7 @@ public class ProductServiceImp implements ProductService {
      * @param : product
      * @return : inserted product
      * @throws HttpUnprocessableEntityException in case the product already exists in the database
+     * @throws HttpBadRequestException in case the given product has a negative id
      *
      * -----------------------------------------------------------------------------------------------
      *
@@ -62,11 +63,15 @@ public class ProductServiceImp implements ProductService {
      *
      */
     @Override
-    public Product insertProduct(Product product) throws HttpUnprocessableEntityException{
+    public Product insertProduct(Product product) throws HttpUnprocessableEntityException, HttpBadRequestException{
 
         Long productId = product.getId();
 
-       boolean isTheProductPresent =  ! productRepo.findById(productId).isEmpty();
+        if( productId < 0 ){
+            throw new HttpBadRequestException(productId);
+        }
+
+        boolean isTheProductPresent =  ! productRepo.findById(productId).isEmpty();
 
        if(isTheProductPresent == true){
            //
@@ -77,9 +82,8 @@ public class ProductServiceImp implements ProductService {
 
        }else {
 
-
            return productRepo.save(product);
-
+           
        }
 
 
