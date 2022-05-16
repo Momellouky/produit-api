@@ -26,32 +26,6 @@
     the end point, by convention is: <br> <code>/produits/</code> 
 </p>
 
-<!-- CSS Code:  -->
-<style>
-table.GeneratedTable {
-  width: 100%;
-  background-color: #ffffff;
-  border-collapse: collapse;
-  border-width: 2px;
-  border-color: #0080FF;
-  border-style: solid;
-  color: #000;
-}
-
-table.GeneratedTable td, table.GeneratedTable th {
-  border-width: 2px;
-  border-color: #646464;
-  border-style: solid;
-  padding: 5px;
-  color: #000
-}
-
-table.GeneratedTable thead {
-  background-color: #646464;
-}
-</style>
-
-<!-- HTML Code -->
 
 <table class="GeneratedTable">
   <thead>
