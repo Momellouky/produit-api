@@ -67,7 +67,6 @@ public class ProductController {
 
     /**
      *
-     * @param productId : product's id to modify.
      * @param newProduct : newer values of the product
      * @return
      */
