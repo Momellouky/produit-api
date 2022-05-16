@@ -65,34 +65,9 @@ public class ProductServiceImp implements ProductService {
     @Override
     public Product insertProduct(Product product) throws HttpUnprocessableEntityException, HttpBadRequestException{
 
-        String productName = product.getName();
-
-        if(productName == null){
-            throw new HttpBadRequestException(productName);
-        }
-
-
-
-
-        boolean isProductNameNotValid =  productName.length() > 100 || productName.length() == 0;
-
-        System.out.println("Product name lenght: " + productName.length());
-
-        if(  isProductNameNotValid ){
-            throw new HttpBadRequestException(productName);
-        }
+        validateProduct(product);
 
         Long productId = product.getId();
-
-        if( productId < 0 ){
-            throw new HttpBadRequestException(productId);
-        }
-
-        int productQuantity = product.getQuantity();
-
-        if(productQuantity < 0){
-            throw new HttpBadRequestException(productQuantity);
-        }
 
         boolean isTheProductPresent =  ! productRepo.findById(productId).isEmpty();
 
@@ -126,6 +101,36 @@ public class ProductServiceImp implements ProductService {
 
         return productRepo.save(product);
 
+    }
+
+    private boolean validateProduct(Product product){
+        String productName = product.getName();
+
+        if(productName == null){
+            throw new HttpBadRequestException(productName);
+        }
+
+        boolean isProductNameNotValid =  productName.length() > 100 || productName.length() == 0;
+
+        System.out.println("Product name lenght: " + productName.length());
+
+        if(  isProductNameNotValid ){
+            throw new HttpBadRequestException(productName);
+        }
+
+        Long productId = product.getId();
+
+        if( productId < 0 ){
+            throw new HttpBadRequestException(productId);
+        }
+
+        int productQuantity = product.getQuantity();
+
+        if(productQuantity < 0){
+            throw new HttpBadRequestException(productQuantity);
+        }
+
+        return true;
     }
 
 
