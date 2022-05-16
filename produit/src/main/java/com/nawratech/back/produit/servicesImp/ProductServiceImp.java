@@ -107,6 +107,14 @@ public class ProductServiceImp implements ProductService {
 
     }
 
+    @Override
+    public Product updateProduct(Long id, Product newProduct) {
+
+        Product product = findProductById(id);
+
+        return productRepo.save(newProduct);
+
+    }
 
 
 }

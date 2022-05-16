@@ -1,6 +1,5 @@
 package com.nawratech.back.produit.controllers;
 
-import com.nawratech.back.produit.exceptionHandlers.RessourceNotFoundException;
 import com.nawratech.back.produit.models.Product;
 import com.nawratech.back.produit.productAssembler.ProductAssembler;
 import com.nawratech.back.produit.services.ProductService;
@@ -8,8 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -68,6 +65,18 @@ public class ProductController {
 
     }
 
+    /**
+     *
+     * @param productId : product's id to modify.
+     * @param newProduct : newer values of the product
+     * @return
+     */
+    @PutMapping("/{id}")
+    public EntityModel<Product> updateProduct(@RequestBody Product newProduct){
 
+        Product modifiedProduct = productService.updateProduct(newProduct.getId(), newProduct);
+        return productAssembler.toModel(modifiedProduct);
+
+    }
 
 }
