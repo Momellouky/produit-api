@@ -65,6 +65,23 @@ public class ProductServiceImp implements ProductService {
     @Override
     public Product insertProduct(Product product) throws HttpUnprocessableEntityException, HttpBadRequestException{
 
+        String productName = product.getName();
+
+        if(productName == null){
+            throw new HttpBadRequestException(productName);
+        }
+
+
+
+
+        boolean isProductNameNotValid =  productName.length() > 100 || productName.length() == 0;
+
+        System.out.println("Product name lenght: " + productName.length());
+
+        if(  isProductNameNotValid ){
+            throw new HttpBadRequestException(productName);
+        }
+
         Long productId = product.getId();
 
         if( productId < 0 ){
@@ -73,7 +90,8 @@ public class ProductServiceImp implements ProductService {
 
         boolean isTheProductPresent =  ! productRepo.findById(productId).isEmpty();
 
-       if(isTheProductPresent == true){
+       if( isTheProductPresent ){
+
            //
            // we don't need to insert the product, otherwise, we end up with duplicate products.
            //
@@ -83,9 +101,12 @@ public class ProductServiceImp implements ProductService {
        }else {
 
            return productRepo.save(product);
-           
+
        }
 
 
     }
+
+
+
 }
