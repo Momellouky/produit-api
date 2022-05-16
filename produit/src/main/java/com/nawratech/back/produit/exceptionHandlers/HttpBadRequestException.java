@@ -13,4 +13,8 @@ public class HttpBadRequestException extends RuntimeException{
         super("Product name is not valid, it is null or its length is equal to 0, or greater then the maximum length " +
                 "allowed in the database ( 100 characters )");
     }
+
+    public HttpBadRequestException(int productQuantity){
+        super("Product quantity can't be negative"); 
+    }
 }

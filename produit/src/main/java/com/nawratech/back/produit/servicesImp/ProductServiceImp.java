@@ -88,6 +88,12 @@ public class ProductServiceImp implements ProductService {
             throw new HttpBadRequestException(productId);
         }
 
+        int productQuantity = product.getQuantity();
+
+        if(productQuantity < 0){
+            throw new HttpBadRequestException(productQuantity);
+        }
+
         boolean isTheProductPresent =  ! productRepo.findById(productId).isEmpty();
 
        if( isTheProductPresent ){
