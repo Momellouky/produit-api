@@ -15,6 +15,6 @@ public class HttpBadRequestException extends RuntimeException{
     }
 
     public HttpBadRequestException(int productQuantity){
-        super("Product quantity can't be negative"); 
+        super("Product quantity can't be negative");
     }
 }

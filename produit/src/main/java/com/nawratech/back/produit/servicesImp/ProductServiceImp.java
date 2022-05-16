@@ -118,7 +118,13 @@ public class ProductServiceImp implements ProductService {
 
         Product product = findProductById(id);
 
-        return productRepo.save(newProduct);
+        int productQuantity = product.getQuantity();
+
+        if(productQuantity < 0 ){
+            throw new HttpBadRequestException(productQuantity);
+        }
+
+        return productRepo.save(product);
 
     }
 
