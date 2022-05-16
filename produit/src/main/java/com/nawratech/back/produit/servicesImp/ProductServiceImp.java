@@ -93,6 +93,9 @@ public class ProductServiceImp implements ProductService {
 
         Product product = findProductById(id);
 
+        product.setName(newProduct.getName());
+        product.setQuantity(newProduct.getQuantity());
+        
         validateProduct(product);
 
         return productRepo.save(product);
