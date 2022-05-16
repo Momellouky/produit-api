@@ -18,6 +18,6 @@ public interface ProductService {
      * @param id : the products id
      * @return product: the deleted product [ if exists ]
      */
-    // public Product deleteProduct(Long id);
+    public Product deleteProductById(Long id);
 
 }

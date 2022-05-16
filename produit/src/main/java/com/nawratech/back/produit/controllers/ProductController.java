@@ -78,4 +78,13 @@ public class ProductController {
 
     }
 
+    @DeleteMapping("/{id}")
+    public EntityModel<Product> deleteProductById(@PathVariable Long id){
+
+        Product deletedProduct = productService.deleteProductById(id);
+
+        return productAssembler.toModel(deletedProduct);
+
+    }
+
 }

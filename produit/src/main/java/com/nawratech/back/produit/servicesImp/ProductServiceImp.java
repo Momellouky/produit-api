@@ -95,10 +95,21 @@ public class ProductServiceImp implements ProductService {
 
         product.setName(newProduct.getName());
         product.setQuantity(newProduct.getQuantity());
-        
+
         validateProduct(product);
 
         return productRepo.save(product);
+
+    }
+
+    @Override
+    public Product deleteProductById(Long id) {
+
+        Product productToDelete = findProductById(id);
+
+        productRepo.delete(productToDelete);
+
+        return productToDelete;
 
     }
 
