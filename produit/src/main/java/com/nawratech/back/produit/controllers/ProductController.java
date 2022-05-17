@@ -7,16 +7,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
-@RequestMapping("produits")
+@RequestMapping("/produits")
 public class ProductController {
 
     private ProductService productService;
@@ -28,22 +30,40 @@ public class ProductController {
         this.productAssembler = productAssembler;
     }
 
-    @GetMapping
-    public CollectionModel<EntityModel<Product>> findAllProducts(){
+    @RequestMapping(value = "" , method = RequestMethod.GET)
+    public CollectionModel<EntityModel<Product>> findAllProducts(@RequestParam("limit") Optional<Integer> limit){
 
-        List<EntityModel<Product>> products = productService.findAllProducts().stream() //
-                .map( product -> {
-                            return productAssembler.toModel(
-                                   product
-                            );
-                        }
+        List<EntityModel<Product>> products;
 
-                ) //
-                .collect(Collectors.toList());
+        if(limit.isPresent()){
+            products = productService.findProductsLimitN(limit.get()).stream().map(
+                    product -> {
+                        return productAssembler.toModel(product);
+                    }
+            ).collect(Collectors.toList());
+        }else {
+            products = productService.findAllProducts().stream() //
+                    .map( product -> {
+                                return productAssembler.toModel(
+                                        product
+                                );
+                            }
 
-        return CollectionModel.of(products, linkTo(methodOn(ProductController.class).findAllProducts()).withSelfRel());
+                    ) //
+                    .collect(Collectors.toList());
+        }
+
+
+
+        return CollectionModel.of(products, linkTo(methodOn(ProductController.class).findAllProducts(null)).withSelfRel());
 
     }
+
+
+//    public CollectionModel<EntityModel<Product>> findSubsetOfProducts(@RequestParam("limit") String limit){
+//        System.out.println("Product limit" + limit);
+//        return null;
+//    }
 
     @GetMapping("{id}")
     public EntityModel<Product> findProductById(@PathVariable Long id){

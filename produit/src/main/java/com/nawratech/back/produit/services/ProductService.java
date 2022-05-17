@@ -7,6 +7,8 @@ import java.util.List;
 public interface ProductService {
 
      public List<Product> findAllProducts();
+
+     public List<Product> findProductsLimitN(int limit);
      public Product findProductById(Long id);
 
     public Product insertProduct(Product product);

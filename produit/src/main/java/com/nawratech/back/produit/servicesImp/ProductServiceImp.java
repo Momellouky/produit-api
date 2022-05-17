@@ -1,5 +1,6 @@
 package com.nawratech.back.produit.servicesImp;
 
+import com.nawratech.back.produit.exceptionHandlers.ErrorMessages;
 import com.nawratech.back.produit.exceptionHandlers.HttpBadRequestException;
 import com.nawratech.back.produit.exceptionHandlers.HttpUnprocessableEntityException;
 import com.nawratech.back.produit.exceptionHandlers.RessourceNotFoundException;
@@ -7,9 +8,11 @@ import com.nawratech.back.produit.models.Product;
 import com.nawratech.back.produit.repositories.ProductRepo;
 import com.nawratech.back.produit.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductServiceImp implements ProductService {
@@ -31,6 +34,28 @@ public class ProductServiceImp implements ProductService {
         }
 
         return allProducts;
+
+    }
+
+    @Override
+    public List<Product> findProductsLimitN(int limit) throws RessourceNotFoundException, HttpBadRequestException{
+
+        //
+        // case : limit > data.size() -> Api return the hole set of data.
+        //
+
+
+        if( limit <= 0 ){
+            throw new HttpBadRequestException(ErrorMessages.INVALID_QUERY_PARAM_LIMIT);
+        }
+
+        List<Product> products = productRepo.findLimitedProducts(limit);
+
+        if(products.isEmpty()){
+            throw new RessourceNotFoundException();
+        }
+
+        return products;
 
     }
 
