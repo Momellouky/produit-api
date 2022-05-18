@@ -12,4 +12,20 @@ import java.util.List;
 public interface ProductRepo extends JpaRepository<Product, Long> {
     @Query(value = "SELECT * FROM produits order by id asc limit :limit", nativeQuery = true)
     public List<Product> findLimitedProducts(@Param("limit") int limit);
+
+    public List<Product> findByOrderByIdAsc();
+
+    public List<Product> findByOrderByIdDesc();
+
+/*
+    @Query(value = "SELECT * FROM produits order by id :orderStrategy limit :limit", nativeQuery = true)
+    public List<Product> findOrderedProductsLimitN(@Param("orderStrategy") String orderStrategy, @Param("limit") int limit);
+
+    */
+
+    @Query(value = "SELECT * FROM produits order by id asc limit :limit", nativeQuery = true)
+    public List<Product> findOrderByAscLimitN(@Param("limit") int limit);
+    @Query(value = "SELECT * FROM produits order by id desc limit :limit", nativeQuery = true)
+    public List<Product> findOrderByDescLimitN(@Param("limit") int limit);
+
 }

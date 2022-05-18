@@ -7,7 +7,9 @@ public enum ErrorMessages {
     INVALID_NAME,
     INVALID_QUERY_PARAM_LIMIT,
     NULL_NAME,
-    NULL_ID
+    NULL_ID,
+    PRODUCT_EXISTS,
+    INVALID_QUERY_PARAM_ORDER
 
 
 }

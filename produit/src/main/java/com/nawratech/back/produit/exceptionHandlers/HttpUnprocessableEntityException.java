@@ -1,13 +1,25 @@
 package com.nawratech.back.produit.exceptionHandlers;
 
+import javax.websocket.OnError;
+
 public class HttpUnprocessableEntityException extends RuntimeException{
 
-    public HttpUnprocessableEntityException(){
-        super("This entity can't be processed, review the body content");
+    private String message ;
+    public HttpUnprocessableEntityException(ErrorMessages errorMessages){
+
+        if(errorMessages == ErrorMessages.INVALID_QUERY_PARAM_LIMIT){
+            message = "Query parameter limit has an invalid value.";
+        }else if(errorMessages == ErrorMessages.INVALID_QUERY_PARAM_ORDER){
+            message = "Query parameter order has an invalid value.";
+        }else if(errorMessages == ErrorMessages.PRODUCT_EXISTS){
+            message = "This product already exists.";
+        }
+
     }
 
-    public HttpUnprocessableEntityException(Long id){
-        super("Product with id: " + id + " already exists. ");
+    @Override
+    public String getMessage(){
+        return message;
     }
 
 }

@@ -61,6 +61,32 @@ public class ProductServiceImp implements ProductService {
     }
 
     @Override
+    public List<Product> findOrderedProducts(String order) {
+
+        List<Product> resultSet;
+        String orderStrategy = order.toLowerCase();
+        boolean notValidStrategy = ! ( orderStrategy.equals("asc") || orderStrategy.equals("desc"));
+
+        if( notValidStrategy ){
+
+            throw new HttpUnprocessableEntityException(ErrorMessages.INVALID_QUERY_PARAM_ORDER);
+
+        }
+
+        if( orderStrategy.equals("asc") ){
+            resultSet =  productRepo.findByOrderByIdAsc();
+        }else {
+            resultSet = productRepo.findByOrderByIdDesc();
+        }
+
+        if(resultSet.isEmpty()){
+            throw new RessourceNotFoundException();
+        }
+
+        return resultSet;
+    }
+
+    @Override
     public Product findProductById(Long id) throws HttpBadRequestException {
 
         if(id < 0) {
@@ -103,7 +129,7 @@ public class ProductServiceImp implements ProductService {
            // we don't need to insert the product, otherwise, we end up with duplicate products.
            //
 
-           throw new HttpUnprocessableEntityException(productId);
+           throw new HttpUnprocessableEntityException(ErrorMessages.PRODUCT_EXISTS);
 
        }else {
 
@@ -136,6 +162,36 @@ public class ProductServiceImp implements ProductService {
         productRepo.delete(productToDelete);
 
         return productToDelete;
+
+    }
+
+    @Override
+    public List<Product> findProductsLimitNOrdered(Integer limit, String order) {
+
+        boolean isOrderValid = ( order.toLowerCase().equals("asc") || order.toLowerCase().equals("desc") );
+
+        if( limit <= 0 ) {
+            throw new HttpUnprocessableEntityException(ErrorMessages.INVALID_QUERY_PARAM_LIMIT);
+        }
+
+        if( ! isOrderValid ){
+            throw new HttpUnprocessableEntityException(ErrorMessages.INVALID_QUERY_PARAM_ORDER);
+        }
+
+        List<Product> resultSet;
+
+        if(order.toLowerCase().equals("asc")){
+            resultSet = productRepo.findOrderByAscLimitN(limit);
+        }else{
+            resultSet = productRepo.findOrderByDescLimitN(limit);
+        }
+
+
+        if(resultSet.isEmpty()){
+            throw new RessourceNotFoundException();
+        }
+
+        return resultSet;
 
     }
 

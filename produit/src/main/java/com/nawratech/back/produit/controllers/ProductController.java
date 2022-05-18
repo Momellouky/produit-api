@@ -7,10 +7,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.hateoas.CollectionModel;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -31,11 +33,28 @@ public class ProductController {
     }
 
     @RequestMapping(value = "" , method = RequestMethod.GET)
-    public CollectionModel<EntityModel<Product>> findAllProducts(@RequestParam("limit") Optional<Integer> limit){
+    public CollectionModel<EntityModel<Product>> findAllProducts(@RequestParam("limit") Optional<Integer> limit,
+                                                                 @RequestParam("order") Optional<String> order){
 
         List<EntityModel<Product>> products;
 
-        if(limit.isPresent()){
+        if(order.isPresent()){
+
+            if(limit.isPresent()){
+                products = productService.findProductsLimitNOrdered(limit.get(), order.get()).stream().map(
+                        product -> {
+                            return productAssembler.toModel(product);
+                        }
+                ).collect(Collectors.toList());
+            }else{
+                products = productService.findOrderedProducts(order.get()).stream().map(
+                        product -> {
+                            return productAssembler.toModel(product);
+                        }
+                ).collect(Collectors.toList());
+            }
+
+        }else if(limit.isPresent()){
             products = productService.findProductsLimitN(limit.get()).stream().map(
                     product -> {
                         return productAssembler.toModel(product);
@@ -55,7 +74,7 @@ public class ProductController {
 
 
 
-        return CollectionModel.of(products, linkTo(methodOn(ProductController.class).findAllProducts(null)).withSelfRel());
+        return CollectionModel.of(products, linkTo(methodOn(ProductController.class).findAllProducts(null, null)).withSelfRel());
 
     }
 
