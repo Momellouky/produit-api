@@ -63,7 +63,7 @@ public class ProductServiceImp implements ProductService {
     public Product findProductById(Long id) throws HttpBadRequestException {
 
         if(id < 0) {
-            throw new HttpBadRequestException(id);
+            throw new HttpBadRequestException(ErrorMessages.NEGATIVE_ID);
         }
 
         return  productRepo.findById(id).orElseThrow(() -> new RessourceNotFoundException());
@@ -142,7 +142,7 @@ public class ProductServiceImp implements ProductService {
         String productName = product.getName();
 
         if(productName == null){
-            throw new HttpBadRequestException(productName);
+            throw new HttpBadRequestException(ErrorMessages.INVALID_NAME);
         }
 
         boolean isProductNameNotValid =  productName.length() > 100 || productName.length() == 0;
@@ -150,19 +150,19 @@ public class ProductServiceImp implements ProductService {
         System.out.println("Product name lenght: " + productName.length());
 
         if(  isProductNameNotValid ){
-            throw new HttpBadRequestException(productName);
+            throw new HttpBadRequestException(ErrorMessages.INVALID_NAME);
         }
 
         Long productId = product.getId();
 
         if( productId < 0 ){
-            throw new HttpBadRequestException(productId);
+            throw new HttpBadRequestException(ErrorMessages.NEGATIVE_ID);
         }
 
         int productQuantity = product.getQuantity();
 
         if(productQuantity < 0){
-            throw new HttpBadRequestException(productQuantity);
+            throw new HttpBadRequestException(ErrorMessages.NEGATIVE_QUANTITY);
         }
 
         return true;
