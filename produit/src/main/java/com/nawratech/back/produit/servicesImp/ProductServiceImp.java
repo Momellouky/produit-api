@@ -12,6 +12,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -139,28 +140,31 @@ public class ProductServiceImp implements ProductService {
     }
 
     private boolean validateProduct(Product product){
-        String productName = product.getName();
+        Optional<String> productName = Optional.ofNullable(product.getName());
+        Optional<Long> productId = Optional.ofNullable(product.getId());
+        Optional<Integer> productQuantity = Optional.ofNullable(product.getQuantity());
 
-        if(productName == null){
-            throw new HttpBadRequestException(ErrorMessages.INVALID_NAME);
+        if( productId.isEmpty() ){
+            throw new HttpBadRequestException(ErrorMessages.NULL_ID);
         }
 
-        boolean isProductNameNotValid =  productName.length() > 100 || productName.length() == 0;
-        
+        if( productName.isEmpty() ){
+            throw new HttpBadRequestException(ErrorMessages.NULL_NAME);
+        }
+
+        boolean isProductNameNotValid =  productName.get().length() > 100 || productName.get().length() == 0;
+
 
         if(  isProductNameNotValid ){
             throw new HttpBadRequestException(ErrorMessages.INVALID_NAME);
         }
 
-        Long productId = product.getId();
-
-        if( productId < 0 ){
+        if( productId.get() < 0 ){
             throw new HttpBadRequestException(ErrorMessages.NEGATIVE_ID);
         }
 
-        int productQuantity = product.getQuantity();
 
-        if(productQuantity < 0){
+        if(productQuantity.get() < 0){
             throw new HttpBadRequestException(ErrorMessages.NEGATIVE_QUANTITY);
         }
 
