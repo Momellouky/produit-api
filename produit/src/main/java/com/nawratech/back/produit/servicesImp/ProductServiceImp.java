@@ -146,8 +146,7 @@ public class ProductServiceImp implements ProductService {
         }
 
         boolean isProductNameNotValid =  productName.length() > 100 || productName.length() == 0;
-
-        System.out.println("Product name lenght: " + productName.length());
+        
 
         if(  isProductNameNotValid ){
             throw new HttpBadRequestException(ErrorMessages.INVALID_NAME);
