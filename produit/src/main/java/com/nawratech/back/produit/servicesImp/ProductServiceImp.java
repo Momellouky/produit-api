@@ -143,6 +143,8 @@ public class ProductServiceImp implements ProductService {
     @Override
     public Product updateProduct(Long id, Product newProduct) {
 
+        validateProduct(newProduct);
+
         Product product = findProductById(id);
 
         product.setName(newProduct.getName());
@@ -196,6 +198,7 @@ public class ProductServiceImp implements ProductService {
     }
 
     private boolean validateProduct(Product product){
+
         Optional<String> productName = Optional.ofNullable(product.getName());
         Optional<Long> productId = Optional.ofNullable(product.getId());
         Optional<Integer> productQuantity = Optional.ofNullable(product.getQuantity());
