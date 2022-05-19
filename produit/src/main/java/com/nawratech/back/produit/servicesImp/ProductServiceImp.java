@@ -8,7 +8,6 @@ import com.nawratech.back.produit.models.Product;
 import com.nawratech.back.produit.repositories.ProductRepo;
 import com.nawratech.back.produit.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,12 +1,10 @@
 package com.nawratech.back.produit.controllers;
 
 import com.nawratech.back.produit.models.Product;
-import com.nawratech.back.produit.productAssembler.ProductAssembler;
 import com.nawratech.back.produit.services.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.hateoas.CollectionModel;
-import org.springframework.hateoas.EntityModel;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.lang.Nullable;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -16,66 +14,47 @@ import java.util.Locale;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
 @RequestMapping("/produits")
 public class ProductController {
 
     private ProductService productService;
-    private ProductAssembler productAssembler;
 
     @Autowired
-    public ProductController(ProductService productService, ProductAssembler productAssembler) {
+    public ProductController(ProductService productService) {
         this.productService = productService;
-        this.productAssembler = productAssembler;
     }
 
     @RequestMapping(value = "" , method = RequestMethod.GET)
-    public CollectionModel<EntityModel<Product>> findAllProducts(@RequestParam("limit") Optional<Integer> limit,
+    public ResponseEntity<List<Product>>  findAllProducts(@RequestParam("limit") Optional<Integer> limit,
                                                                  @RequestParam("order") Optional<String> order){
 
-        List<EntityModel<Product>> products;
+        List<Product> products;
 
         if(order.isPresent()){
 
             if(limit.isPresent()){
-                products = productService.findProductsLimitNOrdered(limit.get(), order.get()).stream().map(
-                        product -> {
-                            return productAssembler.toModel(product);
-                        }
-                ).collect(Collectors.toList());
+
+                products = productService.findProductsLimitNOrdered(limit.get(), order.get());
+
+
+
             }else{
-                products = productService.findOrderedProducts(order.get()).stream().map(
-                        product -> {
-                            return productAssembler.toModel(product);
-                        }
-                ).collect(Collectors.toList());
+                products = productService.findOrderedProducts(order.get());
             }
 
         }else if(limit.isPresent()){
-            products = productService.findProductsLimitN(limit.get()).stream().map(
-                    product -> {
-                        return productAssembler.toModel(product);
-                    }
-            ).collect(Collectors.toList());
-        }else {
-            products = productService.findAllProducts().stream() //
-                    .map( product -> {
-                                return productAssembler.toModel(
-                                        product
-                                );
-                            }
 
-                    ) //
-                    .collect(Collectors.toList());
+            products = productService.findProductsLimitN(limit.get());
+
+        }else {
+            products = productService.findAllProducts();
         }
 
 
 
-        return CollectionModel.of(products, linkTo(methodOn(ProductController.class).findAllProducts(null, null)).withSelfRel());
-
+        return new ResponseEntity<List<Product>>(products, HttpStatus.OK);
     }
 
 
@@ -85,22 +64,21 @@ public class ProductController {
 //    }
 
     @GetMapping("{id}")
-    public EntityModel<Product> findProductById(@PathVariable Long id){
+    public ResponseEntity<Product> findProductById(@PathVariable Long id){
 
         Product product = productService.findProductById(id);
 
+        return new ResponseEntity<>(product, HttpStatus.OK);
 
-        return productAssembler.toModel(product);
 
     }
 
     @PostMapping
-    @ResponseStatus(code = HttpStatus.CREATED)
-    public EntityModel<Product> insertProduct(@RequestBody Product productToInsert){
+    public ResponseEntity<Product> insertProduct(@RequestBody Product productToInsert){
 
         Product insertedProduct =  productService.insertProduct(productToInsert);
 
-        return productAssembler.toModel(insertedProduct);
+        return new ResponseEntity<Product>(insertedProduct, HttpStatus.CREATED);
 
     }
 
@@ -110,19 +88,19 @@ public class ProductController {
      * @return
      */
     @PutMapping("/{id}")
-    public EntityModel<Product> updateProduct(@RequestBody Product newProduct){
+    public ResponseEntity<Product> updateProduct(@RequestBody Product newProduct){
 
         Product modifiedProduct = productService.updateProduct(newProduct.getId(), newProduct);
-        return productAssembler.toModel(modifiedProduct);
+
+        return new ResponseEntity<Product>(modifiedProduct, HttpStatus.OK);
 
     }
 
     @DeleteMapping("/{id}")
-    public EntityModel<Product> deleteProductById(@PathVariable Long id){
+    @ResponseStatus(code = HttpStatus.NOT_FOUND)
+    public void deleteProductById(@PathVariable Long id){
 
-        Product deletedProduct = productService.deleteProductById(id);
-
-        return productAssembler.toModel(deletedProduct);
+        productService.deleteProductById(id);
 
     }
 
